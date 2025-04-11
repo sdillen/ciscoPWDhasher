@@ -9,6 +9,8 @@ MIN_PYTHON = (3, 6)
 if sys.version_info < MIN_PYTHON:
     sys.exit("Python %s.%s or later is required.\n" % MIN_PYTHON)
 
+from getpass import getpass
+
 from CiscoPWDhasher import pwd_check, InvalidPassword, type5, type7, type8, type9
 
 
@@ -37,9 +39,9 @@ def show_menu():
     print('[1]  Type 5 (MD5)')
     print('[2]  Type 7 (XOR Cipher)')
     print('[3]  Type 8 (PBKDF2-HMAC-SHA256)')
-    print('[4]  Type 9 (Scrypt)')        
+    print('[4]  Type 9 (Scrypt)')
     print('[5]  Exit')
-    
+
 def app_start():
     """
     Home screen of the script. Gathers input from user to specify what type of hash they want,
@@ -47,7 +49,7 @@ def app_start():
     :return: None
     """
     show_menu()
-    try: 
+    try:
         choice = int(input('\n' + 'Your selection: '))
     except ValueError:
         print('\n' + 'Invalid option. Please enter 1-5 or press CTRL+C to exit: ' + '\n')
@@ -83,7 +85,10 @@ def pwd_input():
     :return: Password to be hashed
     """
     while True:
-        pwd = input('\n' + 'Enter a Plain Text Password to convert: ')
+        pwd = getpass('\n' + 'Enter a Password to convert: ')
+        second_pwd = getpass('Enter Password again to validate: ')
+        if pwd != second_pwd:
+            raise InvalidPassword
         try:
             pwd_check(pwd)
             return pwd
@@ -96,7 +101,7 @@ def pwd_input():
 def main():
     banner()
     app_start()
-         
+
 # Start Here
 if __name__ == "__main__":
     main()
